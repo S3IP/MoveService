@@ -6,35 +6,23 @@ using MoveService.Models;
 public class MoveController : ControllerBase
 {
 
-    private static List<Move> moves = new List<Move>()
+    private readonly DataContext context;
+
+    public MoveController(DataContext context)
     {
-        new Move()
-        {
-            Id = 1,
-            Name = "FlameThrower",
-            Damage = 25, Speed = 60,
-            Accuracy = 80
-        },
-        new Move()
-        {
-            Id = 2,
-            Name = "Watergun",
-            Damage = 20,
-            Speed = 70,
-            Accuracy = 85
-        }
-    };
+        this.context = context;
+    }
 
     [HttpGet]
     public async Task<ActionResult<List<Move>>> Get()
     {
-        return Ok(moves);
+        return Ok(await context.Moves.ToListAsync());
     }
 
     [HttpGet("{id}")]
     public async Task<ActionResult<List<Move>>> Get(int id)
     {
-        var move = moves.Find(x => x.Id == id);
+        var move = context.Moves.FindAsync(id);
         if (move == null)
             return BadRequest("Move not found");
         return Ok(move);
@@ -43,33 +31,38 @@ public class MoveController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<List<Move>>> AddMove(Move move)
     {
-        moves.Add(move);
-        return Ok(moves);
+        context.Moves.Add(move);
+        await context.SaveChangesAsync();
+        return Ok(await context.Moves.ToListAsync());
     }
 
     [HttpPut]
     public async Task<ActionResult<List<Move>>> UpdateMove(Move req)
     {
-        var move = moves.Find(x => x.Id == req.Id);
-        if (move == null)
+        var dbMove = context.Moves.Find(req.Id);
+        if (dbMove == null)
             return BadRequest("Move not found");
 
-        move.Name = req.Name;
-        move.Damage = req.Damage;
-        move.Speed = req.Speed;
-        move.Accuracy = req.Accuracy;
-        return Ok(moves);
+        dbMove.Name = req.Name;
+        dbMove.Damage = req.Damage;
+        dbMove.Speed = req.Speed;
+        dbMove.Accuracy = req.Accuracy;
+        
+        await context.SaveChangesAsync();
+        
+        return Ok(await context.Moves.ToListAsync());
     }
 
     [HttpDelete("{id}")]
     public async Task<ActionResult<List<Move>>> DeleteMove(int id)
     {
-        var move = moves.Find(x => x.Id == id);
-        if (move == null)
+        var dbMove = context.Moves.Find(id);
+        if (dbMove == null)
             return BadRequest("Move not found");
-        
-        moves.Remove(move);
-        return Ok(moves);
+
+        context.Moves.Remove(dbMove);
+        await context.SaveChangesAsync();
+        return Ok(context.Moves.ToListAsync());
     }
 }
 
