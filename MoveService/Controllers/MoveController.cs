@@ -47,7 +47,8 @@ public class MoveController : ControllerBase
         dbMove.Damage = req.Damage;
         dbMove.Speed = req.Speed;
         dbMove.Accuracy = req.Accuracy;
-        
+        dbMove.MoveType = req.MoveType;
+
         await context.SaveChangesAsync();
         
         return Ok(await context.Moves.ToListAsync());
