@@ -22,10 +22,10 @@ public class MoveController : ControllerBase
     [HttpGet("{id}")]
     public async Task<ActionResult<List<Move>>> Get(int id)
     {
-        var move = context.Moves.FindAsync(id);
-        if (move == null)
+        var dbMove = context.Moves.FindAsync(id);
+        if (dbMove == null)
             return BadRequest("Move not found");
-        return Ok(move);
+        return Ok(dbMove);
     }
 
     [HttpPost]

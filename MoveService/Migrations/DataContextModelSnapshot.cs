@@ -39,6 +39,10 @@ namespace MoveService.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("MoveType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("Speed")
                         .HasColumnType("int");
 
