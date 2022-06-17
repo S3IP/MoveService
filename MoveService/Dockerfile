@@ -20,3 +20,19 @@ FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "MoveService.dll"]
+
+# Build
+#FROM mcr.microsoft.com/dotnet/sdk:6.0-focal AS build
+#WORKDIR /source
+#COPY . .
+#RUN dotnet restore "MoveService.csproj" --disable-parallel
+#RUN dotnet publish "MoveService.csproj" -c release -o /app --no-restore
+
+# Run
+#FROM mcr.microsoft.com/dotnet/aspnet:6.0-focal
+#WORKDIR /app
+#COPY --from=build /app ./
+
+#EXPOSE 5000
+
+#ENTRYPOINT ["dotnet", "MoveService.dll"]
